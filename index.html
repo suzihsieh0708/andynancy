@@ -221,13 +221,13 @@
     import { getDatabase, ref, set, onValue, update } from "https://gstatic.com";
 
     const firebaseConfig = {
-      databaseURL: "https://firebasedatabase.app"
+      databaseURL: "https://wedding-416de-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
 
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+// 暫時貼上這段代碼來初始化您的雲端名單
+import { set } from "https://gstatic.com";
 
-// === 貼上一次性初始化名單代碼 ===    
 const initialGuests = {
   "main_table": ["梁志睿", "謝星光", "温惠美", "陳麗美", "謝郭阿屘", "謝志堅", "陳惠莉", "Hank", "蔡麗雲", "溫晉榮", "林英珠"],
   "table_1": ["謝樹吉", "Kelly", "Darren", "Sky", "謝秉鏞", "嫂子", "梁志超", "袁珮雯", "梁心心", "廖俊凱", "廖霈琦", "廖羽涵"],
@@ -250,8 +250,8 @@ const initialGuests = {
 set(ref(database, 'wedding_guests'), initialGuests)
   .then(() => console.log("✅ 成功！15桌賓客名單已成功同步至 Firebase 雲端！"))
   .catch(err => console.error("❌ 寫入失敗，請檢查規則：", err));
-
-    const database = getDatabase(app);
+    
+const database = getDatabase(app);
     
     let localWeddingData = {};
     let localCheckinData = {};
