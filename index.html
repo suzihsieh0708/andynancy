@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌿 婚宴座位查詢與報到系統</title>
+  <style>
+    /* 白綠清新風格主題變數 */
+    :root {
+      --primary-color: #2E5A44;    /* 森林深綠 */
+      --secondary-color: #557A64;  /* 葉綠色 */
+      --accent-color: #EBF2EE;     /* 淡草綠底色 */
+      --bg-white: #FFFFFF;         /* 純白 */
+      --text-main: #2C3E35;        /* 深綠黑文字 */
+      --text-muted: #7A8A81;       /* 灰綠色文字 */
+    }
+
+    body { 
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
+      background-color: var(--accent-color);
+      color: var(--text-main);
+      padding: 30px 20px; 
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h2 {
+      color: var(--primary-color);
+      text-align: center;
+      margin-bottom: 5px;
+      letter-spacing: 2px;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .section { 
+      background-color: var(--bg-white);
+      padding: 20px; 
+      margin-bottom: 20px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 12px rgba(46, 90, 68, 0.05);
+      border: 1px solid rgba(85, 122, 100, 0.1);
+    }
+
+    h3 {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border-left: 4px solid var(--primary-color);
+      padding-left: 10px;
+    }
+
+    /* 統計看板樣式 */
+    .dashboard {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+      padding: 15px 5px;
+    }
+    .stat-item { flex: 1; }
+    .stat-number { 
+      font-size: 28px; 
+      font-weight: bold; 
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+    .stat-label { font-size: 12px; color: var(--text-muted); }
+
+    /* 輸入框與按鈕 */
+    .search-group { display: flex; gap: 8px; }
+    input[type="text"], select { 
+      flex: 1;
+      padding: 12px; 
+      font-size: 14px; 
+      border: 1px solid rgba(85, 122, 100, 0.3);
+      border-radius: 8px;
+      outline: none;
+      color: var(--text-main);
+      background-color: var(--bg-white);
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(46, 90, 68, 0.1);
+    }
+    button { 
+      padding: 12px 20px; 
+      font-size: 14px; 
+      background-color: var(--primary-color); 
+      color: var(--bg-white); 
+      border: none; 
+      cursor: pointer; 
+      border-radius: 8px; 
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+    button:hover { background-color: #224332; }
+
+    .result-box { margin-top: 15px; font-size: 14px; min-height: 20px; }
+
+    /* 名單列表樣式 */
+    .guest-list { margin-top: 15px; }
+    .guest-item { 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      padding: 12px 8px; 
+      border-bottom: 1px solid rgba(85, 122, 100, 0.08); 
+    }
+    .guest-item:last-child { border-bottom: none; }
+    
+    /* 質感 Checkbox 樣式 */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 14px;
+      user-select: none;
+    }
+    .checkbox-container input { display: none; }
+    .custom-checkbox {
+      height: 18px;
+      width: 18px;
+      border: 2px solid var(--secondary-color);
+      border-radius: 4px;
+      margin-right: 8px;
+      display: inline-block;
+      position: relative;
+    }
+    .checkbox-container input:checked + .custom-checkbox {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    .checkbox-container input:checked + .custom-checkbox::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+    .status-text { font-size: 13px; font-weight: bold; width: 50px; text-align: right; }
+    .status-in { color: var(--primary-color); }
+    .status-out { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🌿 婚宴接待小幫手</h2>
+    <div class="subtitle">White & Green Botanical Wedding</div>
+
+    <!-- 即時人數統計看板 -->
+    <div class="section dashboard">
+      <div class="stat-item">
+        <div id="statTotal" class="stat-number">0</div>
+        <div class="stat-label">應到總人數</div>
+      </div>
+      <div class="stat-item" style="border-left: 1px solid rgba(85,122,100,0.15); border-right: 1px solid rgba(85,122,100,0.15);">
+        <div id="statChecked" class="stat-number" style="color: #2E5A44;">0</div>
+        <div class="stat-label">已到場</div>
+      </div>
+      <div class="stat-item">
+        <div id="statRate" class="stat-number">0%</div>
+        <div class="stat-label">當前出席率</div>
+      </div>
+    </div>
+
+    <!-- 功能一：快速搜尋 -->
+    <div class="section">
+      <h3>🔍 賓客座位快速查詢</h3>
+      <div class="search-group">
+        <input type="text" id="searchName" placeholder="請輸入賓客姓名（例：梁志睿）">
+        <button id="btnSearch">查詢</button>
+      </div>
+      <div id="searchResult" class="result-box"></div>
+    </div>
+
+    <!-- 功能二：桌次名單與簽到管理 -->
+    <div class="section">
+      <h3>📝 現場桌次報到管理</h3>
+      <select id="tableSelector">
+        <option value="main_table">👑 主桌</option>
+        <option value="table_1">🔴 第 1 桌 (右)</option>
+        <option value="table_2">🔵 第 2 桌 (左)</option>
+        <option value="table_3">🔴 第 3 桌 (右)</option>
+        <option value="table_5">🔴 第 5 桌 (右)</option>
+        <option value="table_6">🔵 第 6 桌 (left)</option>
+        <option value="table_7">🔴 第 7 桌 (右)</option>
+        <option value="table_8">🔵 第 8 桌 (左)</option>
+        <option value="table_9">🔴 第 9 桌 (右)</option>
+        <option value="table_10">🔵 第 10 桌 (左)</option>
+        <option value="table_11">🔴 第 11 桌 (右)</option>
+        <option value="table_12">🔵 第 12 桌 (左)</option>
+        <option value="table_13">🔴 第 13 桌 (右)</option>
+        <option value="table_14">🔵 第 14 桌 (左)</option>
+        <option value="table_15">🔴 第 15 桌 (右)</option>
+      </select>
+      <div id="guestListContainer" class="guest-list"></div>
+    </div>
+  </div>
+
+  <!-- ==================== Firebase 核心邏輯 ==================== -->
+  <script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getDatabase, ref, onValue, update } from "https://gstatic.com";
+
+    const firebaseConfig = {
+      databaseURL: "https://firebasedatabase.app"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    
+    let localWeddingData = {};
+    let localCheckinData = {};
+
+    const tableNameMap = {
+      "main_table": "👑 主桌",
+      "table_1": "第 1 桌", "table_2": "第 2 桌", "table_3": "第 3 桌", "table_5": "第 5 桌",
+      "table_6": "第 6 桌", "table_7": "第 7 桌", "table_8": "第 8 桌", "table_9": "第 9 桌",
+      "table_10": "第 10 桌", "table_11": "第 11 桌", "table_12": "第 12 桌", "table_13": "第 13 桌",
+      "table_14": "第 14 桌", "table_15": "第 15 桌"
+    };
+
+    // 監聽完整名單節點
+    onValue(ref(database, 'wedding_guests'), (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        localWeddingData = data;
+        calculateAndRenderStats();
+        renderGuestList(document.getElementById('tableSelector').value);
+      }
+    });
+
+    // 監聽完整報到紀錄節點（即時計算總人數的核心）
+    onValue(ref(database, 'checkins'), (snapshot) => {
+      localCheckinData = snapshot.val() || {};
+      calculateAndRenderStats();
+      renderGuestList(document.getElementById('tableSelector').value);
+    });
+
+    // ==========================================
+    // 核心演算法：即時動態計算全場到場人數與出席率
+    // ==========================================
+    function calculateAndRenderStats() {
+      let totalGuests = 0;
+      let checkedGuests = 0;
+
+      // 算應到總人數
+      for (const [tableKey, guestArray] of Object.entries(localWeddingData)) {
+        if (Array.isArray(guestArray)) {
+          totalGuests += guestArray.length;
+        }
+      }
+
+      // 算實到總人數
+      for (const [tableKey, checkinObj] of Object.entries(localCheckinData)) {
+        if (checkinObj && typeof checkinObj === 'object') {
+          for (const [index, isChecked] of Object.entries(checkinObj)) {
+            // 必須確認該名單在對應桌次存在，且狀態為 true
+            if (isChecked === true && localWeddingData[tableKey] && localWeddingData[tableKey][index]) {
+              checkedGuests++;
+            }
+          }
+        }
+      }
+
+      // 計算百分比
+      const rate = totalGuests > 0 ? Math.round((checkedGuests / totalGuests) * 100) : 0;
+
+      // 更新到看板 UI
+      document.getElementById('statTotal').innerText = totalGuests;
+      document.getElementById('statChecked').innerText = checkedGuests;
+      document.getElementById('statRate').innerText = `${rate}%`;
+    }
+
+    // ==========================================
+    // 功能一：搜尋功能
+    // ==========================================
+    document.getElementById('btnSearch').addEventListener('click', () => {
+      const searchName = document.getElementById('searchName').value.trim();
+      const resultDiv = document.getElementById('searchResult');
+      
+      if (!searchName) {
+        resultDiv.innerHTML = "<span style='color:#d9534f;'>⚠️ 請輸入姓名再進行查詢</span>";
+        return;
+      }
+
+      let found = false;
+      for (const [tableKey, guestArray] of Object.entries(localWeddingData)) {
+        const index = guestArray.indexOf(searchName);
+        if (index !== -1) {
+          const tableName = tableNameMap[tableKey] || tableKey;
+          const isChecked = (localCheckinData[tableKey] && localCheckinData[tableKey][index]) || false;
+          
+          resultDiv.innerHTML = `
+🌿 找到賓客：${searchName}
+📍 安排座位：${tableName}
+📝 報到狀態：${isChecked ? '已完成報到' : '尚未報到'}
+`;
+found = true;
+break;
+}
+}if (!found) {
+resultDiv.innerHTML = <span style="color:#d9534f;">❌ 找不到【${searchName}】的名單，請確認字是否有打錯。</span>;
+}
+});
+
+// ==========================================
+// 功能二：渲染桌次名單與綁定 Checkbox 事件
+// ==========================================
+const container = document.getElementById('guestListContainer');
+const selector = document.getElementById('tableSelector');
+
+selector.addEventListener('change', (e) => 
+renderGuestList(e.target.value));
+
+function renderGuestList(tableKey) {
+container.innerHTML = "";
+const guests = localWeddingData(tableKey);
+
+if (!guests || guests.length === 0) {
+container.innerHTML = "此桌次目前沒有安排賓客。";
+return;
+}
+
+const tableCheckins = localCheckinData(tableKey) || {};
+
+guests.forEach((guestName, index) => {
+const isChecked = tableCheckins(index) || false;
+
+const div = document.createElement('div');
+div.className = 'guest-item';
+div.innerHTML = `
+${guestName}
+`;
+
+const checkbox = div.querySelector('input(type="checkbox")');
+checkbox.addEventListener('change', (event) => {
+const tKey = event.target.getAttribute('data-table');
+const gIndex = event.target.getAttribute('data-index');
+const status = event.target.checked;
+
+const updates = {};
+updates[checkins/${tKey}/${gIndex}] = status;
+
+// 更新至 Firebase，全場裝置皆會觸發監聽並即時重算人數update(ref(database), updates);
+});
+
+container.appendChild(div);
+});
+}
