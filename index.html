@@ -218,16 +218,16 @@
   <!-- ==================== Firebase 核心邏輯 ==================== -->
   <script type="module">
     import { initializeApp } from "https://gstatic.com";
-    import { getDatabase, ref, onValue, update } from "https://gstatic.com";
+    import { getDatabase, ref, set, onValue, update } from "https://gstatic.com";
 
     const firebaseConfig = {
       databaseURL: "https://firebasedatabase.app"
     };
 
-    const app = initializeApp(firebaseConfig);
-    // 暫時貼上這段代碼來初始化您的雲端名單
-import { set } from "https://gstatic.com";
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
+// === 貼上一次性初始化名單代碼 ===    
 const initialGuests = {
   "main_table": ["梁志睿", "謝星光", "温惠美", "陳麗美", "謝郭阿屘", "謝志堅", "陳惠莉", "Hank", "蔡麗雲", "溫晉榮", "林英珠"],
   "table_1": ["謝樹吉", "Kelly", "Darren", "Sky", "謝秉鏞", "嫂子", "梁志超", "袁珮雯", "梁心心", "廖俊凱", "廖霈琦", "廖羽涵"],
