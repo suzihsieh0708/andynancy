@@ -162,7 +162,7 @@
 <body>
 
   <div class="container">
-    <h2>🌿 Andy & Nancy 婚宴接待小幫手</h2>
+    <h2> Andy  Nancy 婚宴接待小幫手</h2>
     <div class="subtitle">White & Green Botanical Wedding</div>
 
     <!-- 即時人數統計看板 -->
@@ -195,7 +195,7 @@
     <div class="section">
       <h3>📝 現場桌次報到管理</h3>
       <select id="tableSelector">
-        <option value="main_table"> 主桌</option>
+        <option value="main_table">主桌</option>
         <option value="table_1">第 1 桌 (右)</option>
         <option value="table_2">第 2 桌 (左)</option>
         <option value="table_3">第 3 桌 (右)</option>
@@ -225,6 +225,32 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    // 暫時貼上這段代碼來初始化您的雲端名單
+import { set } from "https://gstatic.com";
+
+const initialGuests = {
+  "main_table": ["梁志睿", "謝星光", "温惠美", "陳麗美", "謝郭阿屘", "謝志堅", "陳惠莉", "Hank", "蔡麗雲", "溫晉榮", "林英珠"],
+  "table_1": ["謝樹吉", "Kelly", "Darren", "Sky", "謝秉鏞", "嫂子", "梁志超", "袁珮雯", "梁心心", "廖俊凱", "廖霈琦", "廖羽涵"],
+  "table_2": ["謝淑藝", "林伯駿", "林明皓", "宥圻", "陳貴參", "賴美惠"],
+  "table_3": ["溫碧雲", "黃文子", "溫國全", "丁綺真", "溫宥凱", "溫若妤", "溫惠英", "阮國榮", "徐立恆", "嫂子"],
+  "table_5": ["羅巧玲", "魏桂蘭", "孫本豪", "彭碧君", "黃寶華", "溫麗香", "溫玉琳", "溫展榮", "鄭純茂"],
+  "table_6": ["陳朝文", "黃  露", "陳朝宗", "王欣璋", "陳麗華", "楊連旺", "陳麗香", "陳民豪", "陳麗鳳", "林文鉗"],
+  "table_7": ["Julia", "Michael", "Ching", "Steven", "廖敏芯", "連昱霖", "曹庭華", "MS.REBECCA"],
+  "table_8": ["謝翔光", "陳泫尹", "謝耀光", "謝燦光", "謝雅光", "劉亦麟", "劉羽謙", "劉羽熙", "劉羽璿"],
+  "table_9": ["李蘇翰", "Kelly", "張譯方", "郭芃緯", "Penny", "劉昱呈", "黃冠傑", "林紘立", "郭俊廷"],
+  "table_10": ["張建忠", "連志薰", "高可欽", "林芳琳", "劉　員", "楊正芬", "劉玉祥", "劉根宏", "江順通", "陳奎源", "陳逸婷"],
+  "table_11": ["劉　勁", "曾宗越", "Katie", "曾允皓", "潘宥希", "葉莉君", "女兒", "林郁富", "陳亭安", "鄭立瑜", "陳盈穎"],
+  "table_12": ["管胤筑", "詹　傑", "孫郁晴", "林政穎", "連國泰", "許惠欣", "卓家駿", "孫小芳", "陳貞均"],
+  "table_13": ["林庭安", "高　瑄", "魏祺修", "王陽之", "黃睦容", "張淳婷", "陳　妤", "商惟傑", "楊翎翎", "陳柏廷"],
+  "table_14": ["周藝修", "陳聖燁", "秦其安", "劉家瑋", "王淳耀", "林劭家", "王良佐", "許霆毅", "余曉瑄", "張家傑"],
+  "table_15": ["Johnny", "Shu Han", "張嫚芯", "項　璿", "黃歆甯", "宋政憲", "關達蔚", "朱盛平"]
+};
+
+// 執行一次性寫入
+set(ref(database, 'wedding_guests'), initialGuests)
+  .then(() => console.log("✅ 成功！15桌賓客名單已成功同步至 Firebase 雲端！"))
+  .catch(err => console.error("❌ 寫入失敗，請檢查規則：", err));
+
     const database = getDatabase(app);
     
     let localWeddingData = {};
