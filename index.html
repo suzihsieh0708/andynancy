@@ -163,7 +163,7 @@
 
   <div class="container">
     <h2> Andy  Nancy 婚宴接待小幫手</h2>
-    <div class="subtitle">White & Green Botanical Wedding</div>
+    <div class="subtitle">Andy & Nancy's Wedding</div>
 
     <!-- 即時人數統計看板 -->
     <div class="section dashboard">
@@ -218,177 +218,141 @@
   <!-- ==================== Firebase 核心邏輯 ==================== -->
   <script type="module">
     import { initializeApp } from "https://gstatic.com";
-    import { getDatabase, ref, set, onValue, update } from "https://gstatic.com";
+    import { getDatabase, ref, onValue, set, update } from "https://gstatic.com";
 
     const firebaseConfig = {
       databaseURL: "https://wedding-416de-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
 
 const app = initializeApp(firebaseConfig);
-// 暫時貼上這段代碼來初始化您的雲端名單
-import { set } from "https://gstatic.com";
+const database = getDatabase(app);
 
 const initialGuests = {
-  "main_table": ["梁志睿", "謝星光", "温惠美", "陳麗美", "謝郭阿屘", "謝志堅", "陳惠莉", "Hank", "蔡麗雲", "溫晉榮", "林英珠"],
-  "table_1": ["謝樹吉", "Kelly", "Darren", "Sky", "謝秉鏞", "嫂子", "梁志超", "袁珮雯", "梁心心", "廖俊凱", "廖霈琦", "廖羽涵"],
-  "table_2": ["謝淑藝", "林伯駿", "林明皓", "宥圻", "陳貴參", "賴美惠"],
-  "table_3": ["溫碧雲", "黃文子", "溫國全", "丁綺真", "溫宥凱", "溫若妤", "溫惠英", "阮國榮", "徐立恆", "嫂子"],
-  "table_5": ["羅巧玲", "魏桂蘭", "孫本豪", "彭碧君", "黃寶華", "溫麗香", "溫玉琳", "溫展榮", "鄭純茂"],
-  "table_6": ["陳朝文", "黃  露", "陳朝宗", "王欣璋", "陳麗華", "楊連旺", "陳麗香", "陳民豪", "陳麗鳳", "林文鉗"],
-  "table_7": ["Julia", "Michael", "Ching", "Steven", "廖敏芯", "連昱霖", "曹庭華", "MS.REBECCA"],
-  "table_8": ["謝翔光", "陳泫尹", "謝耀光", "謝燦光", "謝雅光", "劉亦麟", "劉羽謙", "劉羽熙", "劉羽璿"],
-  "table_9": ["李蘇翰", "Kelly", "張譯方", "郭芃緯", "Penny", "劉昱呈", "黃冠傑", "林紘立", "郭俊廷"],
-  "table_10": ["張建忠", "連志薰", "高可欽", "林芳琳", "劉　員", "楊正芬", "劉玉祥", "劉根宏", "江順通", "陳奎源", "陳逸婷"],
-  "table_11": ["劉　勁", "曾宗越", "Katie", "曾允皓", "潘宥希", "葉莉君", "女兒", "林郁富", "陳亭安", "鄭立瑜", "陳盈穎"],
-  "table_12": ["管胤筑", "詹　傑", "孫郁晴", "林政穎", "連國泰", "許惠欣", "卓家駿", "孫小芳", "陳貞均"],
-  "table_13": ["林庭安", "高　瑄", "魏祺修", "王陽之", "黃睦容", "張淳婷", "陳　妤", "商惟傑", "楊翎翎", "陳柏廷"],
-  "table_14": ["周藝修", "陳聖燁", "秦其安", "劉家瑋", "王淳耀", "林劭家", "王良佐", "許霆毅", "余曉瑄", "張家傑"],
-  "table_15": ["Johnny", "Shu Han", "張嫚芯", "項　璿", "黃歆甯", "宋政憲", "關達蔚", "朱盛平"]
-};
+ { name: "梁志睿", table: "主桌" }, { name: "謝星光", table: "主桌" }, { name: "温惠美", table: "主桌" }, { name: "陳麗美", table: "主桌" }, { name: "謝郭阿屘", table: "主桌" }, { name: "謝志堅", table: "主桌" }, { name: "陳惠莉", table: "主桌" }, { name: "Hank", table: "主桌" }, { name: "蔡麗雲", table: "主桌" }, { name: "溫晉榮", table: "主桌" }, { name: "林英珠", table: "主桌" },
+ { name: "謝樹吉", table: "1號桌" }, { name: "Kelly", table: "1號桌" }, { name: "Darren", table: "1號桌" }, { name: "Sky", table: "1號桌" }, { name: "謝秉鏞", table: "1號桌" }, { name: "嫂子", table: "1號桌" }, { name: "梁志超", table: "1號桌" }, { name: "袁珮雯", table: "1號桌" }, { name: "梁心心", table: "1號桌" }, { name: "廖俊凱", table: "1號桌" }, { name: "廖霈琦", table: "1號桌" }, { name: "廖羽涵", table: "1號桌" },
+ { name: "謝淑藝", table: "2號桌" }, { name: "林伯駿", table: "2號桌" }, { name: "林明皓", table: "2號桌" }, { name: "宥圻", table: "2號桌" }, { name: "陳貴參", table: "2號桌" }, { name: "賴美惠", table: "2號桌" },
+{ name: "溫碧雲", table: "3號桌" }, { name: "黃文子", table: "3號桌" }, { name: "溫國全", table: "3號桌" }, { name: "丁綺真", table: "3號桌" }, { name: "溫宥凱", table: "3號桌" }, { name: "溫若妤", table: "3號桌" }, { name: "溫惠英", table: "3號桌" }, { name: "阮國榮", table: "3號桌" }, { name: "徐立恆", table: "3號桌" }, { name: "嫂子", table: "3號桌" },
+  { name: "羅巧玲", table: "5號桌" }, { name: "魏桂蘭", table: "5號桌" }, { name: "孫本豪", table: "5號桌" }, { name: "彭碧君", table: "5號桌" }, { name: "黃寶華", table: "5號桌" }, { name: "溫麗香", table: "5號桌" }, { name: "溫玉琳", table: "5號桌" }, { name: "溫展榮", table: "5號桌" }, { name: "鄭純茂", table: "5號桌" },
+  { name: "陳朝文", table: "6號桌" }, { name: "黃  露", table: "6號桌" }, { name: "陳朝宗", table: "6號桌" }, { name: "王欣璋", table: "6號桌" }, { name: "陳麗華", table: "6號桌" }, { name: "楊連旺", table: "6號桌" }, { name: "陳麗香", table: "6號桌" }, { name: "陳民豪", table: "6號桌" }, { name: "陳麗鳳", table: "6號桌" }, { name: "林文鉗", table: "6號桌" },
+  { name: "Julia", table: "7號桌" }, { name: "Michael", table: "7號桌" }, { name: "Ching", table: "7號桌" }, { name: "Steven", table: "7號桌" }, { name: "廖敏芯", table: "7號桌" }, { name: "連昱霖", table: "7號桌" }, { name: "曹庭華", table: "7號桌" }, { name: "MS.REBECCA", table: "7號桌" },
+  { name: "謝翔光", table: "8號桌" }, { name: "陳泫尹", table: "8號桌" }, { name: "謝耀光", table: "8號桌" }, { name: "謝燦光", table: "8號桌" }, { name: "謝雅光", table: "8號桌" }, { name: "劉亦麟", table: "8號桌" }, { name: "劉羽謙", table: "8號桌" }, { name: "劉羽熙", table: "8號桌" }, { name: "劉羽璿", table: "8號桌" },
+  { name: "李蘇翰", table: "9號桌" }, { name: "Kelly", table: "9號桌" }, { name: "張譯方", table: "9號桌" }, { name: "郭芃緯", table: "9號桌" }, { name: "Penny", table: "9號桌" }, { name: "劉昱呈", table: "9號桌" }, { name: "黃冠傑", table: "9號桌" }, { name: "林紘立", table: "9號桌" }, { name: "郭俊廷", table: "9號桌" },
+  { name: "張建忠", table: "10號桌" }, { name: "連志薰", table: "10號桌" }, { name: "高可欽", table: "10號桌" }, { name: "林芳琳", table: "10號桌" }, { name: "劉　員", table: "10號桌" }, { name: "楊正芬", table: "10號桌" }, { name: "劉玉祥", table: "10號桌" }, { name: "劉根宏", table: "10號桌" }, { name: "江順通", table: "10號桌" }, { name: "陳奎源", table: "10號桌" }, { name: "陳逸婷", table: "10號桌" },
+  { name: "劉　勁", table: "11號桌" }, { name: "曾宗越", table: "11號桌" }, { name: "Katie", table: "11號桌" }, { name: "曾允皓", table: "11號桌" }, { name: "潘宥希", table: "11號桌" }, { name: "葉莉君", table: "11號桌" }, { name: "女兒", table: "11號桌" }, { name: "林郁富", table: "11號桌" }, { name: "陳亭安", table: "11號桌" }, { name: "鄭立瑜", table: "11號桌" }, { name: "陳盈穎", table: "11號桌" },
+  { name: "管胤筑", table: "12號桌" }, { name: "詹　傑", table: "12號桌" }, { name: "孫郁晴", table: "12號桌" }, { name: "林政穎", table: "12號桌" }, { name: "連國泰", table: "12號桌" }, { name: "許惠欣", table: "12號桌" }, { name: "卓家駿", table: "12號桌" }, { name: "孫小芳", table: "12號桌" }, { name: "陳貞均", table: "12號桌" },
+  { name: "林庭安", table: "13號桌" }, { name: "高　瑄", table: "13號桌" }, { name: "魏祺修", table: "13號桌" }, { name: "王陽之", table: "13號桌" }, { name: "黃睦容", table: "13號桌" }, { name: "張淳婷", table: "13號桌" }, { name: "陳　妤", table: "13號桌" }, { name: "商惟傑", table: "13號桌" }, { name: "楊翎翎", table: "13號桌" }, { name: "陳柏廷", table: "13號桌" },
+ { name: "周藝修", table: "14號桌" }, { name: "陳聖燁", table: "14號桌" }, { name: "秦其安", table: "14號桌" }, { name: "劉家瑋", table: "14號桌" }, { name: "王淳耀", table: "14號桌" }, { name: "林劭家", table: "14號桌" }, { name: "王良佐", table: "14號桌" }, { name: "許霆毅", table: "14號桌" }, { name: "余曉瑄", table: "14號桌" }, { name: "張家傑", table: "14號桌" },
+{ name: "Johnny", table: "15號桌" }, { name: "Shu Han", table: "15號桌" }, { name: "張嫚芯", table: "15號桌" }, { name: "項　璿", table: "15號桌" }, { name: "黃歆甯", table: "15號桌" }, { name: "宋政憲", table: "15號桌" }, { name: "關達蔚", table: "15號桌" }, { name: "朱盛平", table: "15號桌" }
+    ];
 
-// 執行一次性寫入
-set(ref(database, 'wedding_guests'), initialGuests)
-  .then(() => console.log("✅ 成功！15桌賓客名單已成功同步至 Firebase 雲端！"))
-  .catch(err => console.error("❌ 寫入失敗，請檢查規則：", err));
-    
-const database = getDatabase(app);
-    
-    let localWeddingData = {};
-    let localCheckinData = {};
 
-    const tableNameMap = {
-      "main_table": "主桌",
-      "table_1": "第 1 桌", "table_2": "第 2 桌", "table_3": "第 3 桌", "table_5": "第 5 桌",
-      "table_6": "第 6 桌", "table_7": "第 7 桌", "table_8": "第 8 桌", "table_9": "第 9 桌",
-      "table_10": "第 10 桌", "table_11": "第 11 桌", "table_12": "第 12 桌", "table_13": "第 13 桌",
-      "table_14": "第 14 桌", "table_15": "第 15 桌"
-    };
-
-    // 監聽完整名單節點
-    onValue(ref(database, 'wedding_guests'), (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        localWeddingData = data;
-        calculateAndRenderStats();
-        renderGuestList(document.getElementById('tableSelector').value);
-      }
+// 將資料格式化為以人名為 key 的物件（避免覆蓋欄位）
+    const finalGuestsData = {};
+    initialGuestsRaw.forEach(g => {
+    // 處理含有特殊空格的人名作為 Key，並給予預設 checkin: falseconst safeKey = g.name.replace(/./g, "_");
+      finalGuestsData[safeKey] = { name: g.name, table: g.table, checkin: false };
     });
-
-    // 監聽完整報到紀錄節點（即時計算總人數的核心）
-    onValue(ref(database, 'checkins'), (snapshot) => {
-      localCheckinData = snapshot.val() || {};
-      calculateAndRenderStats();
+    let globalGuestsData = {};const dbRef = ref(database, 'wedding_v2');
+    // 3. 即時監聽與自動初始化
+    onValue(dbRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) {
+    // 如果資料庫是空的，網頁會「自動」在後端建立完整的 143 位名單set(dbRef, finalGuestsData)
+      .then(() => console.log("✨ 雲端資料庫初始化完成！已匯入 143 位賓客名單"))
+      .catch(err => alert("寫入失敗，請確認 Firebase Rules 規則已開啟為 true。"));
+    } else {
+      globalGuestsData = data;
+      calculateStats();
       renderGuestList(document.getElementById('tableSelector').value);
-    });
-
-    // ==========================================
-    // 核心演算法：即時動態計算全場到場人數與出席率
-    // ==========================================
-    function calculateAndRenderStats() {
-      let totalGuests = 0;
-      let checkedGuests = 0;
-
-      // 算應到總人數
-      for (const [tableKey, guestArray] of Object.entries(localWeddingData)) {
-        if (Array.isArray(guestArray)) {
-          totalGuests += guestArray.length;
-        }
-      }
-
-      // 算實到總人數
-      for (const [tableKey, checkinObj] of Object.entries(localCheckinData)) {
-        if (checkinObj && typeof checkinObj === 'object') {
-          for (const [index, isChecked] of Object.entries(checkinObj)) {
-            // 必須確認該名單在對應桌次存在，且狀態為 true
-            if (isChecked === true && localWeddingData[tableKey] && localWeddingData[tableKey][index]) {
-              checkedGuests++;
-            }
-          }
-        }
-      }
-
-      // 計算百分比
-      const rate = totalGuests > 0 ? Math.round((checkedGuests / totalGuests) * 100) : 0;
-
-      // 更新到看板 UI
-      document.getElementById('statTotal').innerText = totalGuests;
-      document.getElementById('statChecked').innerText = checkedGuests;
-      document.getElementById('statRate').innerText = `${rate}%`;
     }
-
+    });
+    
     // ==========================================
-    // 功能一：搜尋功能
+    // 核心功能：即時動態計算全場到場人數
+    // ==========================================
+    function calculateStats() {
+    let total = 0;
+    let checked = 0;
+    for (const key in globalGuestsData) {
+    total++;
+    if (globalGuestsData[key].checkin === true) {
+    checked++;
+    }
+    }
+    const rate = total > 0 ? Math.round((checked / total) * 100) : 0;
+    document.getElementById('statTotal').innerText = total;
+    document.getElementById('statChecked').innerText = checked;
+    document.getElementById('statRate').innerText = ${rate}%;
+    }
+    
+    // ==========================================
+    // 功能一：輸入姓名快速搜尋
     // ==========================================
     document.getElementById('btnSearch').addEventListener('click', () => {
-      const searchName = document.getElementById('searchName').value.trim();
-      const resultDiv = document.getElementById('searchResult');
+    const searchName = document.getElementById('searchName').value.trim();
+    const resultDiv = document.getElementById('searchResult');
+    if (!searchName) {
+      resultDiv.innerHTML = "⚠️ 請輸入姓名";
+      return;
+    }
+      let found = false;
+      for (const key in globalGuestsData) {
+      const guest = globalGuestsData[key];
+      if (guest.name === searchName) {
+      resultDiv.innerHTML = <div style="background:#f4f7f5; padding:12px; border-radius:8px; 
+        border-left:4px solid var(--primary-color);"> 🌿 找到賓客：<strong>${guest.name}</strong><br> 📍 安排座位：<span style="color:var(--primary-color); font-weight:bold;">${guest.table}</span><br> 📝 報到狀態：${guest.checkin ? '<span class="status-in">已到場</span>' : '<span class="status-out">未到場</span>'} </div>;
+        found = true;
+        break;
+      }
+      }
+      if (!found) {
+        resultDiv.innerHTML = <span style='color:#d9534f;'>❌ 找不到【${searchName}】，請確認字是否有輸入錯誤。</span>;
+          }
+    });
+    
+    // ==========================================
+    // 功能二：依據選擇的桌次，渲染賓客打勾列表
+    // ==========================================
+    const container = document.getElementById('guestListContainer');
+    const selector = document.getElementById('tableSelector');
+    
+    selector.addEventListener('change', (e) => renderGuestList(e.target.value));
+    
+    function renderGuestList(selectedTable) {
+      container.innerHTML = "";
       
-      if (!searchName) {
-        resultDiv.innerHTML = "<span style='color:#d9534f;'>⚠️ 請輸入姓名再進行查詢</span>";
+      // 篩選出該桌的賓客const filtered = [];
+      for (const key in globalGuestsData) {
+        if (globalGuestsData[key].table === selectedTable) {
+          filtered.push({ dbKey: key, ...globalGuestsData[key] });
+        }
+      }
+      
+      if (filtered.length === 0) {
+        container.innerHTML = "資料讀取中或此桌無賓客...";
         return;
       }
-
-      let found = false;
-      for (const [tableKey, guestArray] of Object.entries(localWeddingData)) {
-        const index = guestArray.indexOf(searchName);
-        if (index !== -1) {
-          const tableName = tableNameMap[tableKey] || tableKey;
-          const isChecked = (localCheckinData[tableKey] && localCheckinData[tableKey][index]) || false;
+      // 開始渲染 UI 節點
+      filtered.forEach(guest => {
+        const div = document.createElement('div');
+        div.className = 'guest-item';
+        div.innerHTML = `
+        ${guest.name}
+        `;
+        
+        // 綁定打勾監聽事件：即時連線更新至 Firebase 雲端
+        const checkbox = div.querySelector('input[type="checkbox"]');
+        checkbox.addEventListener('change', (e) => {
+          const dbKey = e.target.getAttribute('data-key');
+          const status = e.target.checked;
           
-          resultDiv.innerHTML = `
-🌿 找到賓客：${searchName}
-📍 安排座位：${tableName}
-📝 報到狀態：${isChecked ? '已完成報到' : '尚未報到'}
-`;
-found = true;
-break;
-}
-}if (!found) {
-resultDiv.innerHTML = <span style="color:#d9534f;">❌ 找不到【${searchName}】的名單，請確認字是否有打錯。</span>;
-}
-});
-
-// ==========================================
-// 功能二：渲染桌次名單與綁定 Checkbox 事件
-// ==========================================
-const container = document.getElementById('guestListContainer');
-const selector = document.getElementById('tableSelector');
-
-selector.addEventListener('change', (e) => 
-renderGuestList(e.target.value));
-
-function renderGuestList(tableKey) {
-container.innerHTML = "";
-const guests = localWeddingData(tableKey);
-
-if (!guests || guests.length === 0) {
-container.innerHTML = "此桌次目前沒有安排賓客。";
-return;
-}
-
-const tableCheckins = localCheckinData(tableKey) || {};
-
-guests.forEach((guestName, index) => {
-const isChecked = tableCheckins(index) || false;
-
-const div = document.createElement('div');
-div.className = 'guest-item';
-div.innerHTML = `
-${guestName}
-`;
-
-const checkbox = div.querySelector('input(type="checkbox")');
-checkbox.addEventListener('change', (event) => {
-const tKey = event.target.getAttribute('data-table');
-const gIndex = event.target.getAttribute('data-index');
-const status = event.target.checked;
-
-const updates = {};
-updates[checkins/${tKey}/${gIndex}] = status;
-
-// 更新至 Firebase，全場裝置皆會觸發監聽並即時重算人數update(ref(database), updates);
-});
-
-container.appendChild(div);
-});
-}
+          const updates = {};
+          updates[wedding_v2/${dbKey}/checkin] = status;
+            
+          // 送至資料庫（全場多台手機會同時秒速跳動同步人數）
+          update(ref(database), updates);
+        });
+        
+        container.appendChild(div);
+      });
+    }
